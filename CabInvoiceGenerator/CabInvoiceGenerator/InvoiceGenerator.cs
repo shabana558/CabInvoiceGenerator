@@ -37,6 +37,33 @@ namespace CabInvoiceGenerator
         }
         //Method to Calculate the fare and handling exception
         public double CalculateFare(double distance, int time)
+        {
+            double totalFare = 0.0;
+            try
+            {
+                if (!(distance <= 0 && time <= 0))
+                {
+                    totalFare = distance * MINIMUM_COST_PER_KM + time * COST_PER_TIME;
+                }
+
+                else if (distance <= 0)
+                {
+                    throw new CustomException(CustomException.ExceptionType.INVALID_DISTANCE, "Distance should be positive integer");
+                }
+                else if (time <= 0)
+                {
+                    throw new CustomException(CustomException.ExceptionType.INVALID_DISTANCE, "Time should be positive integer");
+                }
+
+            }
+            catch (CustomException ex)
+            {
+                Console.WriteLine(ex.message);
+            }
+            return Math.Max(totalFare, MINIMUM_FARE);
+        }
+        //Method to Calculate the fare and handling exception
+        public double CalculateFare(double distance, int time)
 
         {
             double totalFare = 0.0;
@@ -62,6 +89,27 @@ namespace CabInvoiceGenerator
                 Console.WriteLine(ex.message);
             }
             return Math.Max(totalFare, MINIMUM_FARE);
+        }
+        //Method to calculate the totalfare for multiple rides 
+        public InvoiceSummary CalculateFare(Ride[] rides)
+        {
+            double totalFare = 0;
+            try
+            {
+                if (rides == null)
+                {
+                    throw new CustomException(CustomException.ExceptionType.NULL_RIDES, "No rides found");
+                }
+                foreach (Ride ride in rides)
+                {
+                    totalFare += this.CalculateFare(ride.distance, ride.time);
+                }
+            }
+            catch (CustomException ex)
+            {
+                Console.WriteLine(ex.message);
+            }
+            return new InvoiceSummary(rides.Length, totalFare);
         }
     }
 }
