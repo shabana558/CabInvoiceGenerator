@@ -10,6 +10,7 @@ namespace CabInvoiceGenerator
     {
         //Declaring ride Type
         RideType type;
+        public RideRepository rideRepository;
         //Declaring Varaibles
         private double MINIMUM_COST_PER_KM;
         private int COST_PER_TIME;
@@ -18,6 +19,7 @@ namespace CabInvoiceGenerator
         public InvoiceGenerator(RideType type)
         {
             this.type = type;
+            this.rideRepository = new RideRepository();
             //Initializing varaibles for Normal Ride
             if (type.Equals(RideType.NORMAL_RIDE))
             {
@@ -34,33 +36,6 @@ namespace CabInvoiceGenerator
                 this.MINIMUM_FARE = 20;
 
             }
-        }
-        //Method to Calculate the fare and handling exception
-        public double CalculateFare(double distance, int time)
-        {
-            double totalFare = 0.0;
-            try
-            {
-                if (!(distance <= 0 && time <= 0))
-                {
-                    totalFare = distance * MINIMUM_COST_PER_KM + time * COST_PER_TIME;
-                }
-
-                else if (distance <= 0)
-                {
-                    throw new CustomException(CustomException.ExceptionType.INVALID_DISTANCE, "Distance should be positive integer");
-                }
-                else if (time <= 0)
-                {
-                    throw new CustomException(CustomException.ExceptionType.INVALID_DISTANCE, "Time should be positive integer");
-                }
-
-            }
-            catch (CustomException ex)
-            {
-                Console.WriteLine(ex.message);
-            }
-            return Math.Max(totalFare, MINIMUM_FARE);
         }
         //Method to Calculate the fare and handling exception
         public double CalculateFare(double distance, int time)
